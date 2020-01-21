@@ -1,8 +1,11 @@
 package interview;
 
 
+import java.util.HashMap;
 import java.util.LinkedHashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 /**
  * 删除一个字符串中出现次数最多的字符，如果多个字符出现次数一样，则都删除。要求字符顺序不变。
@@ -21,17 +24,15 @@ public class CaiNiaoInternational1 {
         System.out.println(" ============================================ ");
         int appearMost = 0;
         Map<Character,Integer> storeMap = new LinkedHashMap<>();
-        Integer temp;
         for (int i = 0; i < s.length(); i++){
-            temp = storeMap.get(s.charAt(i));
-            if (temp == null){
-                temp = 1;
+            char c = s.charAt(i);
+            if (storeMap.containsKey(s.charAt(i))){
+                storeMap.put(c,storeMap.get(c) + 1);
             }else{
-                ++temp;
+                storeMap.put(c,1);
             }
-            storeMap.put(s.charAt(i),++temp);
-            if (temp > appearMost){
-                appearMost = temp;
+            if (storeMap.get(c) > appearMost){
+                appearMost = storeMap.get(c);
             }
         }
         StringBuilder result = new StringBuilder();
@@ -43,5 +44,29 @@ public class CaiNiaoInternational1 {
             result.append(key);
         }
         System.out.println("after filter character : " + s);
+    }
+
+    /**
+     * 使用jdk8的新特性
+     * */
+    public void  filterCharAppearMost1(String targetStr){
+        HashMap<Character,Integer> map = new HashMap<Character, Integer>();
+        for (int i = 0; i < targetStr.length(); i++) {
+            char c = targetStr.charAt(i);
+            if(map.containsKey(c)){
+                map.put(c, map.get(c)+1);
+            }else{
+                map.put(c, 1);
+            }
+        }
+        Integer max = map.values().stream().reduce(Integer::max).get();
+        List<Character> list = map.keySet()
+                .stream()
+                .filter(key -> map.get(key).equals(max))
+                .collect(Collectors.toList());
+        for (Character character : list) {
+            targetStr = targetStr.replace(character.toString(),"");
+        }
+        System.out.println(targetStr);
     }
 }
